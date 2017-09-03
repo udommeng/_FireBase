@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Fire base Storage</title>
+    <style media="screen">
+        body{
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: silber;
+
+        }
+
+        #uploader{
+            width: 50%;
+            margin-bottom: 10px;
+
+        }
+    </style>
+</head>
+<body>
+    
+    <progress value="0" max="100" id="uploader"> 0% </progress>
+    <input type="file" id="filebutton">
+
+
+<!-- script ของ FileBase -->
+<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyA-GPBqniFFMiZcriSz0hQNipL92Icz3qU",
+    authDomain: "mis-school.firebaseapp.com",
+    databaseURL: "https://mis-school.firebaseio.com",
+    projectId: "mis-school",
+    storageBucket: "mis-school.appspot.com",
+    messagingSenderId: "685879510020"
+  };
+
+  firebase.initializeApp(config);
+
+  var uploader = document.getElementById("uploader");
+  var filebutton = document.getElementById("filebutton");
+
+  filebutton.addEventListener("change",function(e){
+    //Get file
+    var file=e.target.files[0];
+
+    //Get Storage Ref
+    var storageRef = firebase.storage().ref("Picture/" + file.name);
+
+    //-- tas
+    var task = storageRef.put(file);
+    task.on("state_changed",function progress(snapshot){
+        var percentage=(snapshot.bytesTransferred/snapshot.totalBytes)*100;
+        uploader.value = percentage;
+    },function error(err){
+        console.log(err.message);
+    },function complete(){
+        console.log("Upload Complete!!!");
+    });
+
+  });
+
+</script>
+
+
+</body>
+</html>
